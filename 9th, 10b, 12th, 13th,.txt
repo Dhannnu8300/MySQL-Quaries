@@ -1,0 +1,38 @@
+
+
+-- 9th Question Stored Procedure (Get_Country_Payments)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Get_country_payments`(in year year, country varchar(50))
+BEGIN
+ Select Year as Year,
+Country as Country, sum(amount) as TotalAmount from Payments inner join Customers on Payments.customerNumber = customers.customerNumber
+where year(Payments.PaymentDate) = Year and Customers.Country = Country 
+group by year(Payments.PaymentDate), Customers.Country;
+END
+
+
+
+
+
+-- 10th Question Windows Function (b)
+
+select date_format(orderdate, "%Y") as Year_,
+ date_format(orderdate, "%M") as Month_, 
+ count(orderNumber) as Count_orderNumber, 
+ concat(format((LAG(orderNumber) over (order by orderdate) -count(orderNumber) / LAG(orderNumber) over (order by orderdate)) *100,0), "%")  as _YoY_Changes  
+ from orders group by year_,Month_;
+
+
+
+-- 12th Question Error Handling in Stored Porocedures
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Error_handling`(In EmpID int,EmpName varchar(20),EmailAddress varchar(255))
+BEGIN
+Declare exit handler for sqlexception
+begin
+select "Error Ocuured" as ErrorMessage;
+end;
+insert into EMP_EH (EmpID ,EmpName ,EmailAddress) values (1,"Dhanush","hello@world.com");
+select "Data inserted Succesfully" as SuccessMessage;
+END
+
+
+-- 13th Question Triggers
